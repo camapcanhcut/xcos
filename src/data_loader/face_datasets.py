@@ -40,6 +40,9 @@ class InsightFaceBinaryImg(Dataset):
         self.root = root_folder
         self.name = dataset_name
         self.transform = transform
+        print("self.root", self.root)
+        print("self.name", self.name)
+        print("self.transform", self.transform)
         self.img_arr, self.is_same_arr = self.get_val_pair(self.root, self.name)
         self.mask_dir = mask_dir
         self.use_bgr = use_bgr
@@ -84,7 +87,10 @@ class InsightFaceBinaryImg(Dataset):
         return len(self.is_same_arr)
 
     def get_val_pair(self, path, name):
+        print(op.join(path, name))
+        # print(op.join(path, "{}_list.npy".format(name)))
         carray = bcolz.carray(rootdir=op.join(path, name), mode="r")
+        # carray.flush()
         issame = np.load(op.join(path, "{}_list.npy".format(name)))
         return carray, issame
 
@@ -274,10 +280,14 @@ class SiameseImageFolder(Dataset):
         print(">>> In SIFolder, imgfolderdir=", imgs_folder_dir)
         self.root = imgs_folder_dir
         self.wFace_dataset = ImageFolder(imgs_folder_dir, transform)
+        print("typeWFace", type(self.wFace_dataset))
         self.class_num = len(self.wFace_dataset.classes)
         print(">>> self.class_num = ", self.class_num)
-
+        print("typeWFaceTarget", type(self.wFace_dataset.targets))
+        print("typeWFaceTarget[last]", self.wFace_dataset.targets[-1])
         self.train_labels = np.array(self.wFace_dataset.targets, dtype=int)
+        print("Type Train_lables", type(self.train_labels))
+        print("Num Train_lables", len(self.train_labels))
         print(">>> self.train_labels:", self.train_labels[1000:1010])
 
         self.train_data = self.wFace_dataset
